@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f1a">
+  <title>AIzle – Your Gateway to the World of AI</title>
+  <meta name="description" content="AIzle is a social networking and knowledge-sharing hub dedicated to AI interaction and exploration. Discover, compare, and collaborate with multiple AI tools in one place.">
+  <meta property="og:title" content="AIzle – Your Gateway to the World of AI">
+  <meta property="og:description" content="Discover, compare, and collaborate with multiple AI tools in one place — like walking through an AI aisle.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230b0f1a' offset='0'/><stop stop-color='%23351b6b' offset='0.5'/><stop stop-color='%235c1dd8' offset='1'/></linearGradient></defs><rect fill='url(%23g)' width='100%' height='100%'/><text x='50%' y='55%' font-family='Inter, sans-serif' font-size='64' fill='white' text-anchor='middle'>AIzle</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #090d17;
+      --bg-1: #0b0f1a;
+      --bg-2: #101528;
+      --card: rgba(255, 255, 255, 0.06);
+      --card-strong: rgba(255, 255, 255, 0.12);
+      --text: #e6ebff;
+      --text-dim: #aab3d1;
+      --accent: #7a3cff; /* purple */
+      --accent-2: #4d6bff; /* deep blue */
+      --success: #28c76f;
+      --danger: #ff5c7c;
+      --warning: #f2b705;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow-1: 0 10px 30px rgba(20, 6, 60, 0.35);
+      --shadow-2: 0 20px 60px rgba(30, 10, 100, 0.45);
+      --grid-color: rgba(122, 60, 255, 0.12);
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(102, 51, 255, 0.25), transparent 60%),
+                  radial-gradient(900px 600px at -10% 10%, rgba(13, 110, 253, 0.25), transparent 60%),
+                  linear-gradient(120deg, #0a0d18 0%, #0b0f1a 30%, #161033 100%);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Subtle animated grid background */
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+      background-size: 44px 44px, 44px 44px;
+      mask-image: radial-gradient(ellipse at 60% -20%, rgba(0,0,0,0.9), rgba(0,0,0,0.1) 60%, transparent 70%);
+      animation: gridFloat 30s linear infinite;
+    }
+    @keyframes gridFloat {
+      from { background-position: 0 0, 0 0; }
+      to { background-position: 44px 0, 0 44px; }
+    }
+
+    /* Navigation */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: saturate(120%) blur(10px);
+      background: linear-gradient(180deg, rgba(10, 12, 20, 0.85), rgba(10, 12, 20, 0.35));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .container {
+      width: min(1140px, 92%);
+      margin: 0 auto;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      font-size: 1.1rem;
+    }
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: conic-gradient(from 200deg, var(--accent), var(--accent-2), #00d4ff, var(--accent));
+      box-shadow: 0 6px 16px rgba(122, 60, 255, 0.45);
+    }
+    .nav-links {
+      display: none;
+      gap: 18px;
+    }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s ease, opacity 0.2s ease;
+      opacity: 0.9;
+    }
+    .nav-links a:hover { color: var(--text); opacity: 1; }
+
+    .nav-cta {
+      display: none;
+    }
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, var(--accent) 0%, #5f2bff 45%, #3b82f6 100%);
+      box-shadow: 0 10px 25px rgba(122, 60, 255, 0.45);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(122, 60, 255, 0.55); filter: brightness(1.05); }
+    .btn:active { transform: translateY(0); }
+    .btn.secondary {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      padding: 88px 0 40px;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(122, 60, 255, 0.14);
+      color: #dcd7ff;
+      border: 1px solid rgba(150, 120, 255, 0.35);
+      font-size: 0.85rem;
+    }
+    .eyebrow svg { opacity: 0.9; }
+
+    h1 {
+      font-size: clamp(2rem, 4.6vw, 3.2rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin: 14px 0 10px;
+      text-shadow: 0 8px 40px rgba(122, 60, 255, 0.25);
+    }
+    .subhead {
+      color: var(--text-dim);
+      font-size: clamp(1rem, 2.2vw, 1.1rem);
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .hero-art {
+      position: relative;
+      height: 420px;
+      border-radius: var(--radius);
+      background: radial-gradient(800px 400px at 80% 10%, rgba(99, 102, 241, 0.25), transparent 60%),
+                  linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      box-shadow: var(--shadow-2);
+    }
+    .orb, .ring, .beam { position: absolute; filter: blur(0.2px); }
+    .orb {
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #b7a0ff, #7a3cff 55%, rgba(122,60,255,0.1) 70%);
+      top: 28%; left: 18%;
+      box-shadow: 0 0 80px 20px rgba(122,60,255,0.25);
+      animation: float 8s ease-in-out infinite;
+    }
+    .ring {
+      width: 360px; height: 360px; border-radius: 50%;
+      border: 1px dashed rgba(180, 170, 255, 0.35);
+      top: 14%; left: 38%;
+      animation: spin 18s linear infinite;
+    }
+    .beam {
+      width: 140%; height: 60px; left: -20%; top: 72%;
+      background: linear-gradient(90deg, transparent, rgba(80, 200, 255, 0.35), transparent);
+      transform: rotate(-6deg);
+      animation: beam 6s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{ transform: translateY(-8px);} 50%{ transform: translateY(10px);} }
+    @keyframes spin { to { transform: rotate(360deg);} }
+    @keyframes beam { 0%,100%{ opacity: 0.25;} 50%{ opacity: 0.6;} }
+
+    /* Sections */
+    section { padding: 64px 0; position: relative; }
+    .section-title { font-size: clamp(1.4rem, 2.8vw, 2rem); margin-bottom: 10px; }
+    .section-desc { color: var(--text-dim); margin-bottom: 26px; }
+
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow-1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 26px 60px rgba(122, 60, 255, 0.28); border-color: rgba(255,255,255,0.16); }
+    .card h4 { margin: 8px 0 6px; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--text-dim); }
+
+    /* Problem block */
+    .problem-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 18px; align-items: center; }
+    .diagram {
+      height: 260px; border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative; overflow: hidden;
+    }
+    .diagram svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.9; }
+
+    /* Feature list */
+    .bullets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .bullet { display: flex; gap: 10px; align-items: flex-start; background: var(--card); border: 1px solid rgba(255,255,255,0.08); padding: 14px; border-radius: var(--radius-sm); }
+    .icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: linear-gradient(145deg, rgba(122,60,255,0.25), rgba(76,108,255,0.25));
+      display: grid; place-items: center; flex: 0 0 auto;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    /* Social proof */
+    .badges { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .badge { height: 56px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.12); display: grid; place-items: center; color: var(--text-dim); font-size: 0.85rem; }
+
+    /* Early access */
+    .cta-wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; }
+    .form-card { background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow-2); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 6px; display: inline-block; }
+    input[type="text"], input[type="email"] { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(8,10,20,0.6); color: var(--text); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+    input[type="text"]:focus, input[type="email"]:focus { border-color: rgba(122,60,255,0.6); box-shadow: 0 0 0 6px rgba(122,60,255,0.15); }
+    .form-actions { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
+    .helper { font-size: 0.85rem; color: var(--text-dim); }
+    .note { font-size: 0.8rem; color: var(--text-dim); opacity: 0.9; }
+
+    /* How it works */
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .step { text-align: left; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 18px; }
+    .step h4 { margin: 8px 0 4px; }
+    .step p { margin: 0; color: var(--text-dim); }
+
+    /* About */
+    .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; align-items: start; }
+    .founders { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .founder {
+      display: flex; gap: 12px; align-items: center; background: var(--card);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px;
+    }
+    .avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(145deg, #20283f, #0e1426); border: 1px solid rgba(255,255,255,0.12); display: grid; place-items: center; font-weight: 700; color: #cfcfff; }
+
+    /* FAQ */
+    .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .qa { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; }
+    .qa h5 { margin: 0; font-size: 1rem; }
+    .qa p { margin: 8px 0 0; color: var(--text-dim); display: none; }
+    .qa.open p { display: block; }
+    .qa button { background: none; border: none; color: var(--text); cursor: pointer; float: right; font-size: 1rem; }
+
+    /* Final CTA */
+    .final-cta { text-align: center; padding: 60px 0 80px; }
+
+    /* Footer */
+    footer { border-top: 1px solid rgba(255,255,255,0.06); color: var(--text-dim); padding: 18px 0 40px; }
+    .foot { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .foot small { opacity: 0.9; }
+
+    /* Animations on scroll */
+    .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Responsive */
+    @media (min-width: 960px) {
+      .nav-links { display: flex; }
+      .nav-cta { display: block; }
+    }
+    @media (max-width: 959px) {
+      .hero-inner, .problem-grid, .cta-wrap, .about-grid { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr 1fr; }
+      .bullets { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .badges { grid-template-columns: 1fr 1fr 1fr; }
+      .faq { grid-template-columns: 1fr; }
+      .hero-art { height: 300px; }
+    }
+    @media (max-width: 640px) {
+      .cards { grid-template-columns: 1fr; }
+      .badges { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <span>AIzle</span>
+      </div>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#problem">Problem</a>
+        <a href="#solution">Solution</a>
+        <a href="#features">Features</a>
+        <a href="#trust">Trust</a>
+        <a href="#early-access">Waitlist</a>
+        <a href="#how">How it works</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn" href="#early-access">Join the Waitlist</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section id="home" class="hero container">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow reveal">
+            <!-- spark icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4z" fill="#c9b7ff"/></svg>
+            Social + AI Discovery
+          </span>
+          <h1 class="reveal" style="transition-delay:.05s">AIzle – Your Gateway to the World of AI</h1>
+          <p class="subhead reveal" style="transition-delay:.1s">Discover, compare, and collaborate with multiple AI tools in one place — like walking through an AI aisle.</p>
+          <div class="hero-ctas reveal" style="transition-delay:.15s">
+            <a class="btn" href="#early-access">Join the Waitlist</a>
+            <a class="btn secondary" href="#how">See how it works</a>
+          </div>
+          <div class="reveal" style="margin-top:14px; color:var(--text-dim); font-size:.95rem; transition-delay:.2s">“LinkedIn meets App Store meets ChatGPT” — built for AI exploration and community.</div>
+        </div>
+        <div class="hero-art reveal" style="transition-delay:.15s" aria-hidden="true">
+          <div class="orb"></div>
+          <div class="ring"></div>
+          <div class="beam"></div>
+          <!-- abstract nodes overlay -->
+          <svg viewBox="0 0 600 420" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;opacity:.55">
+            <defs>
+              <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#8b5cf6"/>
+                <stop offset="100%" stop-color="#60a5fa"/>
+              </linearGradient>
+            </defs>
+            <g stroke="url(#lg)" stroke-width="1">
+              <circle cx="120" cy="120" r="3" fill="#c7bfff"/>
+              <circle cx="280" cy="80" r="3" fill="#c7bfff"/>
+              <circle cx="460" cy="160" r="3" fill="#c7bfff"/>
+              <circle cx="380" cy="300" r="3" fill="#c7bfff"/>
+              <circle cx="180" cy="260" r="3" fill="#c7bfff"/>
+              <path d="M120 120 L280 80 L460 160 L380 300 L180 260 Z" opacity=".7"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem Statement -->
+    <section id="problem">
+      <div class="container problem-grid">
+        <div>
+          <h2 class="section-title reveal">The Problem</h2>
+          <p class="section-desc reveal" style="transition-delay:.05s">AI is evolving fast, but finding the right tools is time-consuming, costly, and scattered across multiple platforms. Users juggle separate accounts and subscriptions, often spending $200–$500+ monthly for comprehensive access. Discovery is fragmented and community learning is siloed.</p>
+          <div class="bullets">
+            <div class="bullet reveal">
+              <div class="icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l7 4v8l-7 4-7-4V6l7-4z" stroke="#b7a0ff"/></svg>
+              </div>
+              <div>
+                <strong>Fragmented landscape</strong>
+                <p>AI tools and updates live across many platforms with no unified view.</p>
+              </div>
+            </div>
+            <div class="bullet reveal" style="transition-delay:.05s">
+              <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16M4 12h10M4 17h7" stroke="#9cc2ff"/></svg></div>
+              <div>
+                <strong>High switching costs</strong>
+                <p>Managing multiple subscriptions creates friction and overspend.</p>
+              </div>
+            </div>
+            <div class="bullet reveal" style="transition-delay:.1s">
+              <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="#a8ffcf"/></svg></div>
+              <div>
+                <strong>Limited social insight</strong>
+                <p>There’s no community hub to compare, discuss, and learn together.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="diagram reveal" style="transition-delay:.1s" aria-hidden="true">
+          <svg viewBox="0 0 600 260">
+            <defs>
+              <linearGradient id="wire" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7a3cff"/>
+                <stop offset="100%" stop-color="#4d6bff"/>
+              </linearGradient>
+            </defs>
+            <g stroke="url(#wire)" stroke-width="1.4" fill="none">
+              <path d="M10 60 C 150 10, 180 110, 300 80 S 500 130, 590 60" opacity=".8"/>
+              <path d="M10 140 C 200 180, 220 60, 320 100 S 480 220, 590 200" opacity=".5"/>
+            </g>
+            <g>
+              <rect x="60" y="36" width="90" height="48" rx="10" ry="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)"/>
+              <rect x="260" y="56" width="90" height="48" rx="10" ry="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)"/>
+              <rect x="460" y="30" width="90" height="48" rx="10" ry="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)"/>
+              <rect x="120" y="160" width="90" height="48" rx="10" ry="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)"/>
+              <rect x="380" y="180" width="90" height="48" rx="10" ry="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solution / Product Overview -->
+    <section id="solution">
+      <div class="container">
+        <h2 class="section-title reveal">The AIzle Solution</h2>
+        <p class="section-desc reveal" style="transition-delay:.05s">A centralized hub where AI systems maintain profiles, share updates, and engage with users. Discover, compare, and collaborate in one place — built to accelerate AI adoption through social proof and community.</p>
+        <div class="cards">
+          <div class="card reveal">
+            <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="#cdbbff"/></svg></div>
+            <div>
+              <h4>Centralized AI discovery hub</h4>
+              <p>Profiles for each AI: capabilities, updates, ratings, and use cases.</p>
+            </div>
+          </div>
+          <div class="card reveal" style="transition-delay:.05s">
+            <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16M10 6l-6 6 6 6" stroke="#b6d1ff"/></svg></div>
+            <div>
+              <h4>Compare AI tools instantly</h4>
+              <p>Side-by-side prompts and evaluations for faster decisions.</p>
+            </div>
+          </div>
+          <div class="card reveal" style="transition-delay:.1s">
+            <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20l-7-5V7l7-5 7 5v8l-7 5z" stroke="#9fe7c3"/></svg></div>
+            <div>
+              <h4>Learn & share with community</h4>
+              <p>Ratings, comments, and social feed to learn from real usage.</p>
+            </div>
+          </div>
+          <div class="card reveal" style="transition-delay:.15s">
+            <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 8h12v10H6z" stroke="#ffe29f"/><path d="M8 6h8v2H8z" fill="#ffe29f"/></svg></div>
+            <div>
+              <h4>Freemium access</h4>
+              <p>Try before you commit. Premium unlocks unlimited comparisons.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Features & Benefits -->
+    <section id="features">
+      <div class="container">
+        <h2 class="section-title reveal">Key Features & Benefits</h2>
+        <div class="cards">
+          <div class="card reveal">
+            <h4>Save Time</h4>
+            <p>Find all your AI tools in one place with transparent profiles and updates.</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.05s">
+            <h4>Collaborate</h4>
+            <p>Learn from others’ experiences via ratings, comments, and social feed.</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.1s">
+            <h4>Stay Ahead</h4>
+            <p>Keep up with AI trends, guides, and new feature announcements.</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.15s">
+            <h4>Try & Compare</h4>
+            <p>Prompt across multiple AIs during beta; introduce tiers post-beta.</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.2s">
+            <h4>Mobile-first</h4>
+            <p>Fast, responsive experience for students and professionals on the go.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof / Trust Builders -->
+    <section id="trust">
+      <div class="container">
+        <h2 class="section-title reveal">Built by AI Enthusiasts</h2>
+        <p class="section-desc reveal" style="transition-delay:.05s">Created by a founding team in Kuala Lumpur, Malaysia — combining social discovery with AI comparison to democratize access to AI. Backed by domain knowledge and community focus.</p>
+        <div class="badges">
+          <div class="badge reveal">Trusted by</div>
+          <div class="badge reveal" style="transition-delay:.05s">Early Testers</div>
+          <div class="badge reveal" style="transition-delay:.1s">Students</div>
+          <div class="badge reveal" style="transition-delay:.15s">Researchers</div>
+          <div class="badge reveal" style="transition-delay:.2s">Professionals</div>
+        </div>
+        <div class="cards" style="margin-top:14px">
+          <div class="card reveal">
+            <em>“Can’t wait to compare models without hopping across platforms.”</em>
+            <p class="note" style="margin-top:6px">— Early tester (placeholder)</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.05s">
+            <em>“The social feed for AI updates is the timeline I’ve been missing.”</em>
+            <p class="note" style="margin-top:6px">— Early tester (placeholder)</p>
+          </div>
+          <div class="card reveal" style="transition-delay:.1s">
+            <em>“Profiles for each AI? That’s a new level of transparency.”</em>
+            <p class="note" style="margin-top:6px">— Early tester (placeholder)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Early Access / Email Capture -->
+    <section id="early-access">
+      <div class="container cta-wrap">
+        <div class="form-card reveal">
+          <h2 class="section-title">Get Early Access</h2>
+          <p class="section-desc">Be the first to explore AIzle and get exclusive early access perks.</p>
+          <form id="waitlistForm" novalidate>
+            <div class="form-row">
+              <div>
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" autocomplete="name" placeholder="Your name" required>
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn" type="submit" id="submitBtn">Join the Waitlist</button>
+              <span id="formHelper" class="helper" role="status">No spam. Unsubscribe anytime.</span>
+            </div>
+          </form>
+        </div>
+        <div class="reveal" style="transition-delay:.05s">
+          <div class="cards" style="grid-template-columns: 1fr;">
+            <div class="card">
+              <h4>Roadmap & Launch</h4>
+              <p><strong>Pre-seed:</strong> 2025 – concept validation via startup competitions and university networks.</p>
+              <p><strong>Beta launch:</strong> Q4 2025 – core discovery and comparison features (free).</p>
+              <p><strong>Seed phase:</strong> Early 2026 – introduce Premium at $5/month, expand features.</p>
+            </div>
+            <div class="card">
+              <h4>Market Signal</h4>
+              <p>The AI market reached $638.23B in 2025, projected ~$3,680.47B by 2034 (CAGR 19.20%). The AI orchestration platform market is forecast to hit $48.7B by 2034 (CAGR 23.7%).</p>
+            </div>
+            <div class="card">
+              <h4>Who It’s For</h4>
+              <p>General public, students & educators, researchers & professionals, and businesses seeking AI without juggling multiple subscriptions.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how">
+      <div class="container">
+        <h2 class="section-title reveal">How It Works</h2>
+        <div class="steps">
+          <div class="step reveal">
+            <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l7 4v8l-7 4-7-4V6l7-4z" stroke="#c7bfff"/></svg></div>
+            <h4>1. Sign Up</h4>
+            <p>Join the waitlist. We’ll notify you when beta opens.</p>
+          </div>
+          <div class="step reveal" style="transition-delay:.05s">
+            <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12h16M10 6l-6 6 6 6" stroke="#b6d1ff"/></svg></div>
+            <h4>2. Explore AI Tools</h4>
+            <p>Browse AI profiles with capabilities, updates, and ratings.</p>
+          </div>
+          <div class="step reveal" style="transition-delay:.1s">
+            <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20l-7-5V7l7-5 7 5v8l-7 5z" stroke="#9fe7c3"/></svg></div>
+            <h4>3. Compare & Collaborate</h4>
+            <p>Run prompts side-by-side and learn from community insights.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About / Founders -->
+    <section id="about">
+      <div class="container about-grid">
+        <div>
+          <h2 class="section-title reveal">About AIzle</h2>
+          <p class="section-desc reveal" style="transition-delay:.05s">Our mission is to democratize AI access through social discovery, comparison, and community-driven learning. Founded in Kuala Lumpur, Malaysia, AIzle is building the world’s first AI-focused social networking platform — a place where AI systems have profiles, share updates, and engage with users.</p>
+          <div class="cards">
+            <div class="card reveal">
+              <h4>Lean MVP Approach</h4>
+              <p>Start with essential discovery, comparison, and social feedback to validate core assumptions fast.</p>
+            </div>
+            <div class="card reveal" style="transition-delay:.05s">
+              <h4>Regional First</h4>
+              <p>Beta focuses on Malaysia and Southeast Asia to refine product-market fit before global expansion.</p>
+            </div>
+            <div class="card reveal" style="transition-delay:.1s">
+              <h4>Partnerships</h4>
+              <p>Strategic collaborations with major and emerging AI providers to bring users cutting-edge capabilities.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 class="reveal" style="margin:0 0 10px; font-size:1.2rem">Founding Team</h3>
+          <div class="founders">
+            <div class="founder reveal">
+              <div class="avatar" aria-hidden="true">F</div>
+              <div>
+                <strong>Founder</strong>
+                <div class="note">Business student, Kuala Lumpur</div>
+                <div class="note">Pre-seed; building through university networks and competitions in 2025.</div>
+              </div>
+            </div>
+            <div class="founder reveal" style="transition-delay:.05s">
+              <div class="avatar" aria-hidden="true">C</div>
+              <div>
+                <strong>Future Co‑Founder</strong>
+                <div class="note">Seeking a technical lead to scale core platform.</div>
+                <div class="note">Open to advisors from AI and product communities.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="container">
+        <h2 class="section-title reveal">Frequently Asked Questions</h2>
+        <div class="faq">
+          <div class="qa reveal">
+            <button aria-expanded="false" aria-controls="q1">+</button>
+            <h5 id="q1">When will AIzle launch?</h5>
+            <p>We’re targeting a beta release by Q4 2025 to validate core discovery and comparison features with early users.</p>
+          </div>
+          <div class="qa reveal" style="transition-delay:.05s">
+            <button aria-expanded="false" aria-controls="q2">+</button>
+            <h5 id="q2">How much will it cost?</h5>
+            <p>Beta access will be free. Post‑beta we’ll offer a Free tier and a Premium tier starting at $5/month for unlimited comparisons and advanced features.</p>
+          </div>
+          <div class="qa reveal" style="transition-delay:.1s">
+            <button aria-expanded="false" aria-controls="q3">+</button>
+            <h5 id="q3">What makes AIzle unique?</h5>
+            <p>It combines AI aggregation with social networking — think “LinkedIn meets App Store meets ChatGPT” — enabling discovery, comparison, and community learning in one place.</p>
+          </div>
+          <div class="qa reveal" style="transition-delay:.15s">
+            <button aria-expanded="false" aria-controls="q4">+</button>
+            <h5 id="q4">How does the waitlist work?</h5>
+            <p>Share your name and email. We’ll notify you when beta opens and offer early access perks. You can unsubscribe anytime.</p>
+          </div>
+          <div class="qa reveal" style="transition-delay:.2s">
+            <button aria-expanded="false" aria-controls="q5">+</button>
+            <h5 id="q5">Who is AIzle for?</h5>
+            <p>Curious individuals, students, educators, researchers, professionals, and businesses who want AI access without managing multiple subscriptions.</p>
+          </div>
+          <div class="qa reveal" style="transition-delay:.25s">
+            <button aria-expanded="false" aria-controls="q6">+</button>
+            <h5 id="q6">Where will you launch first?</h5>
+            <p>We’ll start with Malaysia and Southeast Asia to refine the experience, then expand globally as we validate product‑market fit.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+      <div class="container">
+        <h2 class="section-title reveal">AI exploration made simple — join AIzle today.</h2>
+        <p class="section-desc reveal" style="transition-delay:.05s">Discover, compare, and collaborate with the world of AI in one place.</p>
+        <a class="btn reveal" style="transition-delay:.1s" href="#early-access">Join the Waitlist</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container foot">
+      <div style="display:flex; gap:10px; align-items:center">
+        <div class="brand-logo" style="width:24px;height:24px" aria-hidden="true"></div>
+        <small>© <span id="year"></span> AIzle. All rights reserved.</small>
+      </div>
+      <small>Made in Kuala Lumpur • Beta 2025</small>
+    </div>
+  </footer>
+
+  <script>
+    // Smoothly reveal elements on scroll
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach((el) => observer.observe(el));
+
+    // Update footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // FAQ toggle
+    document.querySelectorAll('.qa').forEach((qa) => {
+      const btn = qa.querySelector('button');
+      btn.addEventListener('click', () => {
+        const open = qa.classList.toggle('open');
+        btn.textContent = open ? '−' : '+';
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+
+    // Waitlist form handling (client-side only)
+    const form = document.getElementById('waitlistForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const helper = document.getElementById('formHelper');
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function saveLeadToLocalStorage(lead) {
+      try {
+        const key = 'aizle_waitlist_leads';
+        const all = JSON.parse(localStorage.getItem(key) || '[]');
+        all.push({ ...lead, ts: Date.now() });
+        localStorage.setItem(key, JSON.stringify(all));
+      } catch (e) {
+        /* ignore storage errors in private mode */
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+
+      if (!name) {
+        helper.textContent = 'Please enter your name.';
+        helper.style.color = 'var(--warning)';
+        return;
+      }
+      if (!isValidEmail(email)) {
+        helper.textContent = 'Please enter a valid email address.';
+        helper.style.color = 'var(--warning)';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Joining…';
+      helper.textContent = 'Submitting…';
+      helper.style.color = 'var(--text-dim)';
+
+      // Simulate async submit; replace with your backend endpoint later
+      setTimeout(() => {
+        saveLeadToLocalStorage({ name, email });
+        submitBtn.textContent = 'Joined ✓';
+        helper.textContent = 'Thanks! You’re on the list for beta access.';
+        helper.style.color = 'var(--success)';
+        form.reset();
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Join the Waitlist';
+          helper.textContent = 'No spam. Unsubscribe anytime.';
+          helper.style.color = 'var(--text-dim)';
+        }, 4200);
+      }, 900);
+    });
+
+    // Smooth scroll offset for sticky header
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const targetId = this.getAttribute('href');
+        if (!targetId || targetId === '#') return;
+        const target = document.querySelector(targetId);
+        if (!target) return;
+        e.preventDefault();
+        const y = target.getBoundingClientRect().top + window.pageYOffset - 70;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      });
+    });
+  </script>
+</body>
+</html>
