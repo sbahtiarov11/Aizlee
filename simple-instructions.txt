@@ -1,0 +1,22 @@
+🚀 INSTANT WEBSITE VIEWER - No Download Needed!
+
+STEP 1: Go to this website in your browser:
+👉 https://codebeautify.org/htmlviewer
+
+STEP 2: Copy ALL the code from the AIzle file (starts with <!DOCTYPE html>)
+
+STEP 3: Paste it in the HTML box on that website
+
+STEP 4: Click "Run" or "Preview" button
+
+BOOM! Your AIzle website will appear instantly! ✨
+
+Alternative websites you can use:
+- https://www.w3schools.com/html/tryit.asp
+- https://codepen.io/pen/ (click "HTML" and paste code)
+- https://jsfiddle.net/ (paste in HTML section)
+
+If saving locally:
+- MUST save as .html extension
+- Choose "All Files" when saving
+- NOT as .txt file
